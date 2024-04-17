@@ -2,6 +2,7 @@
 
 import { Tabs, TabList, Tab, TabPanels, TabPanel, Box } from "@chakra-ui/react";
 import DecodeType from "./DecodeType";
+import EncodeType from "./EncodeType";
 
 
 export default function EncDecType() {
@@ -22,7 +23,7 @@ export default function EncDecType() {
                 <TabPanels>
                     <TabPanel>
                         <Box  >
-                            ft
+                            <EncodeType></EncodeType>
                         </Box>
 
                     </TabPanel>

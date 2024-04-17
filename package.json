@@ -18,6 +18,8 @@
     "@types/react": "18.2.74",
     "@types/react-dom": "18.2.24",
     "axios": "^1.6.8",
+    "coffee-script": "^1.12.7",
+    "coffeescript": "^2.7.0",
     "dotenv": "^16.4.5",
     "framer-motion": "^11.0.25",
     "get-starknet-core": "4.0.0-next.4",
@@ -29,15 +31,19 @@
     "react-icons": "^5.0.1",
     "server-only": "^0.0.1",
     "sharp": "^0.33.3",
-    "starknet": "6.7.0",
+    "starknet": "file:/D/starknetFork/starknet.js",
     "swr": "^2.2.5",
     "tslib": "^2.6.2",
     "typescript": "^5.4.4",
+    "vm2": "^3.9.19",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
     "encoding": "^0.1.13",
-    "simple-zustand-devtools": "^1.1.0"
+    "simple-zustand-devtools": "^1.1.0",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
   },
   "findUnusedExports": {
     "include": [
