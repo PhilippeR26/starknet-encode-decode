@@ -1,11 +1,13 @@
 "use client";
 
 import { Tabs, TabList, Tab, TabPanels, TabPanel, Box } from "@chakra-ui/react";
-import DecodeType from "./DecodeType";
+import DecodeType from "./DecodeFunction";
 import EncodeType from "./EncodeType";
+import DecodeFunction from "./DecodeFunction";
+import EncodeFunction from "./EncodeFunction";
 
 
-export default function EncDecType() {
+export default function EncDecFunction() {
     return (
         <>
             <Tabs
@@ -17,18 +19,18 @@ export default function EncDecType() {
                 align="start"
             >
                 <TabList >
-                    <Tab>Encode type</Tab>
-                    <Tab>Decode type</Tab>
+                    <Tab>Encode function</Tab>
+                    <Tab>Decode function</Tab>
                 </TabList>
                 <TabPanels>
                     <TabPanel>
                         <Box  >
-                            <EncodeType></EncodeType>
+                            <EncodeFunction></EncodeFunction>
                         </Box>
 
                     </TabPanel>
                     <TabPanel>
-                        <DecodeType></DecodeType>
+                        <DecodeFunction></DecodeFunction>
 
                     </TabPanel>
 

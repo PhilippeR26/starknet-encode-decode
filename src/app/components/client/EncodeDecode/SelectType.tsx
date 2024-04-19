@@ -1,26 +1,20 @@
 "use client";
 
-import { Tabs, TabList, Tab, TabPanels, TabPanel, Box, Center, Select, Stack } from "@chakra-ui/react";
+import { Center, Select, Stack } from "@chakra-ui/react";
 import { useFrontendProvider } from "../provider/providerContext";
-import { CallData, RpcProvider } from "starknet";
+import { CallData } from "starknet";
 import { useStoreAbi } from "../Abi/abiContext";
 import { useEffect, useState } from "react";
 import { useStoreType } from "./typeContext";
 
-interface FormValues {
-  hash: string
-}
-
 export default function SelectType() {
-  const myNodeUrl = useFrontendProvider(state => state.nodeUrl);
   const selectedType = useStoreType(state => state.selectedType);
   const setSelectedType = useStoreType(state => state.setSelectedType);
   const abi = useStoreAbi(state => state.abi);
   const [listType, setListType] = useState<string[]>([]);
-
+  const [selectedOption, setSelectedOption] = useState<string>("");
 
   function getTypeList(): string[] {
-    //const myCallData=new CallData(abi);
     const structs = CallData.getAbiStruct(abi);
     const listStructs = Object.keys(structs);
     console.log({ listStructs });
@@ -29,16 +23,17 @@ export default function SelectType() {
     console.log({ listEnums });
     return [...listStructs, ...listEnums];
   }
-  useEffect(() => { setListType(getTypeList()); }, [abi])
-
-  const [selectedOption, setSelectedOption] = useState<string>("");
-
+  
   const handleSelectChange = (event: any) => {
     const selectedValue = event.target.value;
-    setSelectedOption(selectedValue);
-    setSelectedType(listType[selectedValue]);
-    console.log('Selected option:'+ selectedValue+":",listType[selectedValue]);
+    if (selectedValue !== "") {
+      setSelectedOption(selectedValue);
+      setSelectedType(listType[selectedValue]);
+      console.log('Selected option:' + selectedValue + ":", listType[selectedValue]);
+    }
   };
+  
+  useEffect(() => { setListType(getTypeList()); }, [abi]);
 
   return (
     <>
@@ -50,11 +45,10 @@ export default function SelectType() {
             <Center>
               Select a Struct or an Enum :
             </Center>
-
             <Select
-              placeholder="Select custom Type"
               onChange={handleSelectChange}
               value={selectedOption}
+              placeholder="Select a type"
             >
               {listType.map((type, idx) => <option value={idx}>{type}</option>)}
             </Select>

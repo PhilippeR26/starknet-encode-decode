@@ -54,14 +54,14 @@ export default function GetHash() {
           </Radio>
         </Stack>
       </RadioGroup>
-      <Box px="30px">
+      <Box px="60px" mt={5}>
         <form onSubmit={handleSubmitHash(onSubmitHash)}>
           <FormControl isInvalid={errorsHash.hash as any}>
             <FormLabel htmlFor="hash">{abiHashType == "1" ? <>Contract address</> : <>Class Hash</>} :</FormLabel>
             <Input width={400}
               defaultValue={abiSource}
               id="hash"
-              placeholder="hash or address"
+              placeholder={abiHashType == "1" ? "Contract address" : "Class Hash"}
               {...registerHash("hash", {
                 required: "This is required",
               })}

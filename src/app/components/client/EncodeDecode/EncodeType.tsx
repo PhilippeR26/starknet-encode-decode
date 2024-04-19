@@ -1,33 +1,50 @@
 "use client";
 
-import { RadioGroup, Stack, Radio, Center, Button, FormControl, FormErrorMessage, FormLabel, Input, Box, Textarea } from "@chakra-ui/react";
+import { RadioGroup, Stack, Radio, Center, Button, FormControl, FormErrorMessage, FormLabel, Input, Box, Textarea, Tooltip, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { CallData, RpcProvider, json, type AbiEntry, type BigNumberish } from "starknet";
+import { CallData, RpcProvider, json, type Abi, type AbiEntry, type BigNumberish } from "starknet";
 import { parseCalldataField } from "@/app/core/requestParser"
 
 import { useStoreDecEnc } from "./encDecContext";
 import { useStoreAbi } from "../Abi/abiContext";
 import { useStoreType } from "./typeContext";
-import { evalJS } from "@/app/server/virtualMachine";
+import { encodeTypeVM } from "@/app/server/virtualMachine";
 
 
 interface FormValues {
   toEncode: string
 }
 
-
+function recoverInputs(typeName: string, abi: Abi): string[][] {
+  const abiFlat = abi.flatMap((e) => {
+    if (e.type === 'interface') {
+      return e.items;
+    }
+    return e;
+  });
+  // const structs = CallData.getAbiStruct(abi);
+  // const enums = CallData.getAbiEnum(abi);
+  const abiExtract = abiFlat.find((abiItem) => abiItem.name === typeName);
+  const type=abiExtract.type;
+  const members = abiExtract.members;
+  const variants=abiExtract.variants;
+  const result = type==="struct"? 
+  members.map((e: { name: string, type: string }) => [e.name, e.type])
+  :
+  variants.map((e: { name: string, type: string }) => [e.name, e.type]);
+  return result;
+}
 
 export default function EncodeType() {
-  // TODO : to put in context, to reload next time
   const [isEncoded, setIsEncoded] = useState<boolean>(false);
   const [encoded, setEncoded] = useState<string>("");
+  const [initCode, setInitCode] = useState<string>("");
   const encodeTypeParam = useStoreDecEnc(state => state.encodeTypeParam);
   const setEncodeTypeParam = useStoreDecEnc(state => state.setEncodeTypeParam);
   const abi = useStoreAbi(state => state.abi);
   const selectedType = useStoreType(state => state.selectedType);
-  // const setAbiSource = useStoreAbi(state => state.setAbiSource)
-  // const myNodeUrl = useFrontendProvider(state => state.nodeUrl);
+  const [parametersTable, setParametersTable] = useState<string[][]>([]);
 
   const {
     handleSubmit,
@@ -37,40 +54,63 @@ export default function EncodeType() {
 
   async function onSubmitResponse(values: FormValues) {
     setEncodeTypeParam(values.toEncode);
-    //const myCallData = new CallData(abi);
-    const initialize = "type Order = {p1: BigNumberish,p2: BigNumberish};const myOrder: Order = { p1: 4, p2: 5 };";
     
-    const inputObject=await evalJS(initialize, values.toEncode);
-    console.log("inputObject =", inputObject);
-    const param = [inputObject];
-    console.log("param =", param);
-    const iter = param[Symbol.iterator]();
-    const inputAbi: AbiEntry = {
-      type: "nft_amm::router::router_interface::PairSwapAny",
-      name: "struct"
-    };
-    const structs = CallData.getAbiStruct(abi);
-    const enums = CallData.getAbiEnum(abi);
-    const res = parseCalldataField(iter, inputAbi, structs, enums);
+    const res=await encodeTypeVM(initCode, values.toEncode, abi,selectedType);
     console.log("res =", res);
-
 
     setEncoded(json.stringify(res, undefined, 2));
     setIsEncoded(true);
     console.log("selectedType", selectedType, res);
   }
 
-  useEffect(() => { setIsEncoded(false); }, [selectedType])
+  useEffect(() => {
+    setIsEncoded(false);
+    const params: string[][] = recoverInputs(selectedType, abi);
+    setParametersTable(params);
+  }, [selectedType])
 
 
   return (
     <>
       <Box>
+        <TableContainer>
+          <Table variant="striped" colorScheme="purple">
+            <TableCaption>needed parameters</TableCaption>
+            <Thead>
+              <Tr>
+                <Th>Name</Th>
+                <Th>Type</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {parametersTable.map(
+                (param: string[]) =>
+                  <Tr>{
+                    param.map((item: string) => <Td>{item}</Td>)}
+                  </Tr>
+              )}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </Box>
+      <Box>
+        <FormControl >
+          <FormLabel htmlFor="toInitialize"> optional initializations, coded in JS/TS :
+          </FormLabel>
+          <Textarea w="100%" minH={150} maxH={400}
+            bg="gray.300"
+            id="toInitialize"
+            placeholder="JS/TS code"
+            onChange={e => setInitCode(e.target.value)}
+          />
+        </FormControl>
+      </Box>
+      <Box>
         <form onSubmit={handleSubmit(onSubmitResponse)}>
           <FormControl isInvalid={errors.toEncode as any}>
             <FormLabel htmlFor="toEncode"> content coded in JS/TS :</FormLabel>
             <Textarea w="100%" minH={150} maxH={400}
-
+              bg="gray.300"
               defaultValue={encodeTypeParam}
               id="toEncode"
               placeholder="JS/TS code"
@@ -122,10 +162,17 @@ export default function EncodeType() {
               hidden={!isEncoded}
             >
               <pre>
-                TBD <br></br>
-                const myCallData = new CallData(abi);<br></br>
-                const encodedArray = [{encodeTypeParam}]; <br></br>
-                const res = myCallData.decodeParameters("{selectedType}", encodedArray);
+                {initCode} <br></br>
+                {/* const myCallData = new CallData(abi);<br></br>
+                const encodedArray = [{encodeTypeParam}]; <br></br> */}
+                const params = [{encodeTypeParam}]; <br></br>
+                const selectedType = "{selectedType}"; <br></br>
+                const iter = params[Symbol.iterator](); <br></br>
+                const structs = CallData.getAbiStruct(abi);<br></br>
+                const enums = CallData.getAbiEnum(abi);<br></br>
+                const abiExtract = abi.find((abiItem) =&gt; abiItem.name === selectedType); <br></br>
+                const inputAbi:AbiEntry = &#123;name:abiExtract.type,type: abiExtract.name&#125;;<br></br>
+                const result = parseCalldataField(iter, inputAbi, structs, enums);<br></br>
               </pre>
             </Box>
           </Box>

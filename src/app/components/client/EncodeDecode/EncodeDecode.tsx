@@ -5,11 +5,15 @@ import EncDecType from "./EncDecType";
 import SelectType from "./SelectType";
 import { useStoreAbi } from "../Abi/abiContext";
 import { useStoreType } from "./typeContext";
+import SelectFunction from "./SelectFunction";
+import { useStoreFunction } from "./functionContext";
+import EncDecFunction from "./EncDecFunction";
 
 
 export default function EncodeDecode() {
   const abi = useStoreAbi(state => state.abi)
   const selectedType = useStoreType(state => state.selectedType);
+  const selectedFunction = useStoreFunction(state => state.selectedFunction);
 
 
   return (
@@ -33,9 +37,15 @@ export default function EncodeDecode() {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <Box bg='pink.200' color='black' >
-                  ftwdvwsdvsdfgdfghjfdghdhgdfhfgh
-                </Box>
+              <SelectFunction></SelectFunction>
+                {selectedFunction !== "" && <>
+                  <Box pt={2}>
+                    Do you want to encode or decode?
+
+                  </Box>
+                  <EncDecFunction></EncDecFunction>
+                </>
+                }
               </TabPanel>
               <TabPanel>
                 <SelectType></SelectType>

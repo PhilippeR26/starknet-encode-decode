@@ -4,7 +4,7 @@ import { RadioGroup, Stack, Radio, Center, Button, FormControl, FormErrorMessage
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useFrontendProvider } from "../provider/providerContext";
-import { CallData, RpcProvider, json } from "starknet";
+import { CallData, RpcProvider, json, num } from "starknet";
 import { useStoreDecEnc } from "./encDecContext";
 import { useStoreAbi } from "../Abi/abiContext";
 import { useStoreType } from "./typeContext";
@@ -34,10 +34,13 @@ export default function DecodeType() {
     setDecodeTypeParam(values.encoded);
     const myCallData = new CallData(abi);
     const params = values.encoded.split(",").map(str => str.trim());
-    const res = myCallData.decodeParameters(selectedType, params);
+    console.log("params=",params);
+    const formattedParams=params.map(e=>num.toHex(e.replaceAll(/"|'/g,""))); //remove ' and " and convert to Hex.
+    console.log("formatted=",formattedParams);
+    const res = myCallData.decodeParameters(selectedType, formattedParams);
     setDecoded(json.stringify(res, undefined, 2));
     setIsDecoded(true);
-    console.log("selectedType", selectedType, params, res);
+    console.log("selectedType", selectedType, formattedParams, res);
   }
 
   useEffect(() => { setIsDecoded(false); }, [selectedType])
@@ -50,7 +53,7 @@ export default function DecodeType() {
           <FormControl isInvalid={errors.encoded as any}>
             <FormLabel htmlFor="encoded"> Encoded response :</FormLabel>
             <Textarea w="100%" minH={150} maxH={400}
-
+              bg="gray.300"
               defaultValue={decodeTypeParam}
               id="encoded"
               placeholder="values separated with commas"

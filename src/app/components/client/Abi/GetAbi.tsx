@@ -49,7 +49,7 @@ export default function GetAbi() {
               Abi from Network
             </Radio>
             {abiSource == "1" && <>
-              <Box px="30px">
+              <Box px="40px">
                 <form onSubmit={handleSubmit(onSubmitUrl)}>
                   <FormControl isInvalid={errors.url as any}>
                     <FormLabel htmlFor="name">Network url :</FormLabel>
@@ -97,7 +97,7 @@ export default function GetAbi() {
           border='4px'
           borderRadius='lg'
           borderColor="black"
-          maxH="400px"
+          maxH="500px"
           overflowY="scroll"
         >
           <pre>
