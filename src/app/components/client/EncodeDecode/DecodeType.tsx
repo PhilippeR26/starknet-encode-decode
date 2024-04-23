@@ -34,9 +34,9 @@ export default function DecodeType() {
     setDecodeTypeParam(values.encoded);
     const myCallData = new CallData(abi);
     const params = values.encoded.split(",").map(str => str.trim());
-    console.log("params=",params);
-    const formattedParams=params.map(e=>num.toHex(e.replaceAll(/"|'/g,""))); //remove ' and " and convert to Hex.
-    console.log("formatted=",formattedParams);
+    console.log("params=", params);
+    const formattedParams = params.map(e => num.toHex(e.replaceAll(/"|'/g, ""))); //remove ' and " and convert to Hex.
+    console.log("formatted=", formattedParams);
     const res = myCallData.decodeParameters(selectedType, formattedParams);
     setDecoded(json.stringify(res, undefined, 2));
     setIsDecoded(true);
@@ -53,7 +53,8 @@ export default function DecodeType() {
           <FormControl isInvalid={errors.encoded as any}>
             <FormLabel htmlFor="encoded"> Encoded response :</FormLabel>
             <Textarea w="100%" minH={150} maxH={400}
-              bg="gray.300"
+              bg="gray.800"
+              textColor="blue.200"
               defaultValue={decodeTypeParam}
               id="encoded"
               placeholder="values separated with commas"

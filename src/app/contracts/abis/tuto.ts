@@ -1,4 +1,4 @@
-[
+export const tutoAbi = [
     {
         "type": "struct",
         "name": "core::byte_array::ByteArray",

@@ -8,6 +8,7 @@ import GetHash from "./GetHash";
 import { useStoreAbi } from "./abiContext";
 import { json, type Abi } from "starknet";
 import styles from '../../../page.module.css'
+import { tutoAbi } from "@/app/contracts/abis/tuto";
 
 
 interface FormValues {
@@ -15,9 +16,10 @@ interface FormValues {
 }
 
 export default function GetAbi() {
-  const [abiSource, setAbiSource] = useState<string>("1");
+  const [abiSource, setAbiSource] = useState<string>("");
   const abi = useStoreAbi(state => state.abi)
   const setAbi = useStoreAbi(state => state.setAbi)
+  const [networkType, setNetworkType] = useState<string>("");
   const {
     handleSubmit,
     register,
@@ -34,9 +36,12 @@ export default function GetAbi() {
     let text: string = "";
     navigator.clipboard.readText().then((res: string) => {
       text = res;
-     // console.log("text=", text);
+      // console.log("text=", text);
       setAbi(json.parse(text));
     });
+  }
+  function handleTutoAbi(): void {
+    setAbi(tutoAbi);
   }
 
 
@@ -46,33 +51,50 @@ export default function GetAbi() {
         <RadioGroup defaultValue='1' onChange={setAbiSource} value={abiSource}>
           <Stack spacing={5} direction="column">
             <Radio colorScheme='blue' value="1">
-              Abi from Network
+              Abi from a network
             </Radio>
             {abiSource == "1" && <>
-              <Box px="40px">
-                <form onSubmit={handleSubmit(onSubmitUrl)}>
-                  <FormControl isInvalid={errors.url as any}>
-                    <FormLabel htmlFor="name">Network url :</FormLabel>
-                    <Input width={400}
-                      id="url"
-                      placeholder="url"
-                      {...register("url", {
-                        required: "This is required",
-                      })}
-                    />
-                    <FormErrorMessage>
-                      {errors.url && errors.url.message}
-                    </FormErrorMessage>
-                  </FormControl>
-                  <Button mt={4} colorScheme="blue" isLoading={isSubmitting} type="submit">
-                    Next
-                  </Button>
-                </form>
-                {!!myNodeUrl && <>
 
-                  <GetHash></GetHash>
-                </>
-                }
+              <Box px="40px">
+                <RadioGroup defaultValue='1' onChange={setNetworkType} value={networkType}>
+                  <Stack spacing={5} direction="column">
+                    <Radio colorScheme='blue' value="1">
+                      Mainnet
+                    </Radio>
+                    {networkType == "1" &&
+                      <Box px="40px">
+                        <GetHash networkType={networkType}></GetHash>
+                      </Box>
+                    }
+                    <Radio colorScheme='blue' value="2">
+                      Sepolia Testnet
+                    </Radio>
+                    {networkType == "2" &&
+                      <Box px="40px">
+                        <GetHash networkType={networkType}></GetHash>
+                      </Box>
+                    }
+                    <Radio colorScheme='blue' value="3">
+                      Custom network
+                    </Radio>
+                    {networkType == "3" &&
+                      <Box px="40px">
+                        <Input width={400}
+                          id="url"
+                          placeholder="url"
+                          {...register("url", {
+                            required: "This is required",
+                          })}
+                        />
+                        <FormErrorMessage>
+                          {errors.url && errors.url.message}
+                        </FormErrorMessage>
+
+                        <GetHash networkType={networkType}></GetHash>
+                      </Box>
+                    }
+                  </Stack>
+                </RadioGroup>
               </Box>
             </>}
             <Radio colorScheme='blue' value="2">
@@ -80,12 +102,19 @@ export default function GetAbi() {
             </Radio>
             {abiSource == "2" && <>
               <Box px="30px">
-                <Button onClick={handlePaste} maxW="180px">Paste Abi</Button>
+                <Button colorScheme='blue' onClick={handlePaste} maxW="180px">Paste Abi</Button>
               </Box>
             </>
             }
-
-
+            <Radio colorScheme='blue' value="3">
+              Tutorial abi
+            </Radio>
+            {abiSource == "3" && <>
+              <Box px="30px">
+                <Button colorScheme='blue' onClick={handleTutoAbi} maxW="180px">Get Tuto Abi</Button>
+              </Box>
+            </>
+            }
           </Stack>
         </RadioGroup>
 

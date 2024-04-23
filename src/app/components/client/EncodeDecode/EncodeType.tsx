@@ -1,6 +1,6 @@
 "use client";
 
-import { RadioGroup, Stack, Radio, Center, Button, FormControl, FormErrorMessage, FormLabel, Input, Box, Textarea, Tooltip, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { RadioGroup, Stack, Radio, Center, Button, FormControl, FormErrorMessage, FormLabel, Input, Box, Textarea, Tooltip, Table, TableCaption, TableContainer, Tbody, Td, Th, Thead, Tr, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { CallData, RpcProvider, json, type Abi, type AbiEntry, type BigNumberish } from "starknet";
@@ -26,13 +26,13 @@ function recoverInputs(typeName: string, abi: Abi): string[][] {
   // const structs = CallData.getAbiStruct(abi);
   // const enums = CallData.getAbiEnum(abi);
   const abiExtract = abiFlat.find((abiItem) => abiItem.name === typeName);
-  const type=abiExtract.type;
+  const type = abiExtract.type;
   const members = abiExtract.members;
-  const variants=abiExtract.variants;
-  const result = type==="struct"? 
-  members.map((e: { name: string, type: string }) => [e.name, e.type])
-  :
-  variants.map((e: { name: string, type: string }) => [e.name, e.type]);
+  const variants = abiExtract.variants;
+  const result = type === "struct" ?
+    members.map((e: { name: string, type: string }) => [e.name, e.type])
+    :
+    variants.map((e: { name: string, type: string }) => [e.name, e.type]);
   return result;
 }
 
@@ -45,6 +45,7 @@ export default function EncodeType() {
   const abi = useStoreAbi(state => state.abi);
   const selectedType = useStoreType(state => state.selectedType);
   const [parametersTable, setParametersTable] = useState<string[][]>([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const {
     handleSubmit,
@@ -54,13 +55,19 @@ export default function EncodeType() {
 
   async function onSubmitResponse(values: FormValues) {
     setEncodeTypeParam(values.toEncode);
-    
-    const res=await encodeTypeVM(initCode, values.toEncode, abi,selectedType);
-    console.log("res =", res);
+    try {
+      const res = await encodeTypeVM(initCode, values.toEncode, abi, selectedType);
+      console.log("res =", res);
 
-    setEncoded(json.stringify(res, undefined, 2));
-    setIsEncoded(true);
-    console.log("selectedType", selectedType, res);
+      setEncoded(json.stringify(res, undefined, 2));
+      setIsEncoded(true);
+      console.log("selectedType", selectedType, res);
+    } catch {
+      console.log("Error encode type");
+      setIsEncoded(false);
+
+        onOpen();
+    }
   }
 
   useEffect(() => {
@@ -94,23 +101,12 @@ export default function EncodeType() {
         </TableContainer>
       </Box>
       <Box>
-        <FormControl >
-          <FormLabel htmlFor="toInitialize"> optional initializations, coded in JS/TS :
-          </FormLabel>
-          <Textarea w="100%" minH={150} maxH={400}
-            bg="gray.300"
-            id="toInitialize"
-            placeholder="JS/TS code"
-            onChange={e => setInitCode(e.target.value)}
-          />
-        </FormControl>
-      </Box>
-      <Box>
         <form onSubmit={handleSubmit(onSubmitResponse)}>
           <FormControl isInvalid={errors.toEncode as any}>
-            <FormLabel htmlFor="toEncode"> content coded in JS/TS :</FormLabel>
+            <FormLabel fontWeight={800} htmlFor="toEncode" mt={3}> content coded in JS/TS :</FormLabel>
             <Textarea w="100%" minH={150} maxH={400}
-              bg="gray.300"
+              bg="gray.800"
+              textColor="blue.200"
               defaultValue={encodeTypeParam}
               id="toEncode"
               placeholder="JS/TS code"
@@ -122,6 +118,18 @@ export default function EncodeType() {
               {errors.toEncode && errors.toEncode.message}
             </FormErrorMessage>
           </FormControl>
+
+          <FormControl >
+          <FormLabel htmlFor="toInitialize"> optional initializations, coded in JS/TS :
+          </FormLabel>
+          <Textarea w="100%" minH={150} maxH={400}
+            bg="gray.300"
+            id="toInitialize"
+            placeholder="JS/TS code"
+            onChange={e => setInitCode(e.target.value)}
+          />
+        </FormControl>
+
           <Button mt={4} colorScheme="blue" isLoading={isSubmitting} type="submit">
             Encode custom type
           </Button>
@@ -178,6 +186,31 @@ export default function EncodeType() {
           </Box>
         </Stack>
       </Center>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+      >
+        <ModalOverlay />
+
+        <ModalContent>
+          <ModalHeader fontSize='lg' fontWeight='bold'>
+            Error.
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Center>
+              Error to encode.<br></br>
+              Verify your code.
+            </Center>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='red' onClick={onClose} ml={3}>
+              OK
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   )
 }

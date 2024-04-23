@@ -13,6 +13,8 @@ import EncDecFunction from "./EncDecFunction";
 export default function EncodeDecode() {
   const abi = useStoreAbi(state => state.abi)
   const selectedType = useStoreType(state => state.selectedType);
+  const selectedHighTab = useStoreType(state => state.selectedHighTab);
+  const setSelectedHighTab = useStoreType(state => state.setSelectedHighTab);
   const selectedFunction = useStoreFunction(state => state.selectedFunction);
 
 
@@ -24,6 +26,8 @@ export default function EncodeDecode() {
             Work on a function or just on a custom type ?
           </>
           <Tabs
+            index={selectedHighTab}
+            onChange={setSelectedHighTab}
             variant="enclosed-colored"
             colorScheme='facebook'
             size="md"
@@ -37,7 +41,7 @@ export default function EncodeDecode() {
             </TabList>
             <TabPanels>
               <TabPanel>
-              <SelectFunction></SelectFunction>
+                <SelectFunction></SelectFunction>
                 {selectedFunction !== "" && <>
                   <Box pt={2}>
                     Do you want to encode or decode?
@@ -47,7 +51,7 @@ export default function EncodeDecode() {
                 </>
                 }
               </TabPanel>
-              <TabPanel>
+              <TabPanel  >
                 <SelectType></SelectType>
                 {selectedType !== "" && <>
                   <Box pt={2}>

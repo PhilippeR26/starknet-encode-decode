@@ -119,9 +119,9 @@ export default function DecodeFunction() {
             <FormControl isInvalid={errors.encoded as any}>
               <FormLabel htmlFor="encoded"> Encoded response :</FormLabel>
               <Textarea w="100%" minH={150} maxH={400}
-              bg="gray.300"
-
-                defaultValue={decodeFunctionParam}
+                 bg="gray.800"
+                 textColor="blue.200"
+                   defaultValue={decodeFunctionParam}
                 id="encoded"
                 placeholder="values separated with commas"
                 {...register("encoded", {

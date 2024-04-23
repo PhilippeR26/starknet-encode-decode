@@ -10,9 +10,13 @@ import { useStoreType } from "./typeContext";
 export default function SelectType() {
   const selectedType = useStoreType(state => state.selectedType);
   const setSelectedType = useStoreType(state => state.setSelectedType);
+  const listType = useStoreType(state => state.listType);
+  const setListType = useStoreType(state => state.setListType);
+  const selectedTypeIndex = useStoreType(state => state.selectedTypeIndex);
+  const setSelectedTypeIndex = useStoreType(state => state.setSelectedTypeIndex);
   const abi = useStoreAbi(state => state.abi);
-  const [listType, setListType] = useState<string[]>([]);
-  const [selectedOption, setSelectedOption] = useState<string>("");
+  //const [listType, setListType] = useState<string[]>([]);
+  //const [selectedOption, setSelectedOption] = useState<string>("");
 
   function getTypeList(): string[] {
     const structs = CallData.getAbiStruct(abi);
@@ -27,13 +31,20 @@ export default function SelectType() {
   const handleSelectChange = (event: any) => {
     const selectedValue = event.target.value;
     if (selectedValue !== "") {
-      setSelectedOption(selectedValue);
+      setSelectedTypeIndex(selectedValue);
       setSelectedType(listType[selectedValue]);
       console.log('Selected option:' + selectedValue + ":", listType[selectedValue]);
     }
   };
   
   useEffect(() => { setListType(getTypeList()); }, [abi]);
+  useEffect(() => { 
+    if (selectedTypeIndex !== "") {
+    setSelectedTypeIndex(selectedTypeIndex);
+    setSelectedType(listType[Number(selectedTypeIndex)]);
+    console.log('Selected option:' + selectedTypeIndex + ":", listType[Number(selectedTypeIndex)]);
+  } }, [selectedTypeIndex]);
+
 
   return (
     <>
@@ -47,7 +58,7 @@ export default function SelectType() {
             </Center>
             <Select
               onChange={handleSelectChange}
-              value={selectedOption}
+              value={selectedTypeIndex}
               placeholder="Select a type"
             >
               {listType.map((type, idx) => <option value={idx}>{type}</option>)}

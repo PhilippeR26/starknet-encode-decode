@@ -31,9 +31,17 @@ But it's also a pedagogical tool, to understand how Starknet is communicating : 
 
 
 ## Initialization :
-First, we have to initialize the definition of the contract we will use.  
-Each contract includes a part called ABI ; it's a JSON that defines all types and functions that can be used in the contract.
-Follow the instructions [here](./abiForTuto.md).
+First, we have to initialize the definition of the Starknet smart-contract we will use.  
+Each contract includes a part called ABI ; it's a JSON that defines all types and functions that can be used in the contract. 
+
+Click in the DAPP on `Tutorial Abi`, then on `Get Tuto Abi`. 
+
+> [!WARNING]
+> If you use the `Pasted Abi` item with FireFox : by default, it's not allowed to paste data. You have to configure it this way :
+> 1. Enter about:config in navigation bar
+> 2. Click "Accept the Risk and Continue"
+> 3. Search dom.events.asyncClipboard.readText and set true.
+> ![](./tutoImages/fireFoxConfig.png)   
 
 From now, I recommend to use the DAPP in a browser, and to follow the tuto in a separated browser, to have both windows visible at the same time.
 
@@ -227,12 +235,12 @@ We have explored the `Custom type` tab ; the most difficult part is made. Let's 
 ### Decode function response :
 To decode the response of a function, it's not complicated :
 - All functions with a `state_mutability` set to `external`  do not provides any response to Starknet.js (even if the abi lists some outputs).
-- Functions with a `state_mutability` set to `view` provides an encoded response. This response includes only one item. If several values are returned, they are enclosed in a tuple.
-Select the `Function` tab. Select  `get_owner` type, and click `Decode function` tab.   
+- Functions with a `state_mutability` set to `view` provides an encoded response. This response includes only one item. If several values are returned, they are enclosed in a tuple.  
+Select the `Function` tab. Select  `get_owner` function, and click `Decode function` tab.   
 The function is sending just a ContractAddress. Enter `0x37bfdeb9c262566183211b89e85b871518eb0c32cbcb026dce9a486560a03e0` in the Encoded response to test the decoding.  
 You have immediately the response.
 
-Select the `Function` tab. Select  `echo_un_tuple` function, and click `Decode function` tab. 
+Now, select the `echo_un_tuple` function, and click `Decode function` tab. 
 You can see that this case is more complicated : the response is a tuple, that includes a felt252 and an Option.  
 Try `1234567, 0, 0xa0`. The response is conform : a tuple with a number and an Option :
 ![](./tutoImages/decodeFn.png)
@@ -242,11 +250,11 @@ Let's finish with the encoding of the parameters that you want to send to your S
 Select  `echo_un_tuple` function, and click `Encode function` tab.  
 You can see that this function is expecting 2 parameters. Let's build an object including these parameters. You can see that the DAPP is proposing a template to help you.  
 Enter in the `Object` text area : `{ amount: 200000n, destination: "0x2353454235abb23"};` then click on `Encode function`.
-You have just under the result :
+You have just bellow the result :
 ![](./tutoImages/encodeFn1.png)
 We have a 0 after the number 200000, because an uint256 is coded on 2 numbers (as we have seen previously).
 And you can see at the end how to obtain the same result using starknet.js :
-![](./tutoImages/EncodeFnSNJS.png)
+![](./tutoImages/encodeFnSNJS.png)
 
 
 And finally, a function with 3 complicated parameters. Select  `swap` function, and click `Encode function` tab.  
@@ -262,7 +270,7 @@ and this code in the `Object` area :
 {swap_list: [pair1, pair2], input_amount: 40000n, deadline: 287534567};
 ```
 The result is :
-![](./tutoImages/EncodeFn2.png)
+![](./tutoImages/encodeFn2.png)
 
 
 Congratulation. You are now an expert of encoding and decoding Starknet data.
