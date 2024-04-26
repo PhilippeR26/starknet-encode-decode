@@ -47,7 +47,11 @@ export default function GetAbi() {
 
   return (
     <>
-      <Stack spacing={5} direction="column">
+      <Stack
+        spacing={5}
+        direction="column"
+        mt={4}
+      >
         <RadioGroup defaultValue='1' onChange={setAbiSource} value={abiSource}>
           <Stack spacing={5} direction="column">
             <Radio colorScheme='blue' value="1">
@@ -118,7 +122,6 @@ export default function GetAbi() {
           </Stack>
         </RadioGroup>
 
-        {/* AbiSource={abiSource} <br /> */}
         <Box hidden={abi.length == 0}
           bg="darkgreen"
           textColor="white"
@@ -127,7 +130,9 @@ export default function GetAbi() {
           borderRadius='lg'
           borderColor="black"
           maxH="500px"
+          maxW="90%"
           overflowY="scroll"
+          overflowX="auto"
         >
           <pre>
             {json.stringify(abi, undefined, 2)}

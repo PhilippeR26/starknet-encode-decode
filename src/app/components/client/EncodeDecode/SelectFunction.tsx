@@ -53,7 +53,7 @@ export default function SelectFunction() {
               value={selectedOption}
               placeholder="Select a function"
             >
-              {listFunction.map((fnName, idx) => <option value={idx}>{fnName}</option>)}
+              {listFunction.map((fnName, idx) => <option key={"idx"+idx.toString()} value={idx}>{fnName}</option>)}
             </Select>
           </Stack>
         </Center>

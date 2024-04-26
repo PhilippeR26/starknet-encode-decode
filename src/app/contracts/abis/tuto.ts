@@ -154,6 +154,20 @@ export const tutoAbi = [
         ]
     },
     {
+        "type": "enum",
+        "name": "core::result::Result<PhilTest2::PhilTest2::Order, core::integer::u512>",
+        "variants": [
+            {
+                "name": "Ok",
+                "type": "PhilTest2::PhilTest2::Order"
+            },
+            {
+                "name": "Err",
+                "type": "core::integer::u512"
+            }
+        ]
+    },
+    {
         "type": "struct",
         "name": "core::integer::u256",
         "members": [
@@ -255,6 +269,32 @@ export const tutoAbi = [
             {
                 "name": "amount",
                 "type": "core::integer::u256"
+            },
+            {
+                "name": "destination",
+                "type": "core::starknet::contract_address::ContractAddress"
+            }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+    },
+    {
+        "type": "function",
+        "name": "get_owner",
+        "inputs": [],
+        "outputs": [
+            {
+                "type": "core::starknet::contract_address::ContractAddress"
+            }
+        ],
+        "state_mutability": "view"
+    },{
+        "type": "function",
+        "name": "complex",
+        "inputs": [
+            {
+                "name": "financial",
+                "type": "(core::array::Array::<core::integer::u256>, core::result::Result<PhilTest2::PhilTest2::Order, core::integer::u512>)"
             },
             {
                 "name": "destination",

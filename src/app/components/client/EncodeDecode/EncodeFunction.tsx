@@ -1,18 +1,20 @@
 "use client";
 
 import { RadioGroup, Stack, Radio, Center, Button, FormControl, FormErrorMessage, FormLabel, Input, Box, Textarea, Tooltip, TableContainer, Table, TableCaption, Th, Thead, Tr, Tbody, Td, useDisclosure, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react";
-import { useEffect, useState, type MouseEventHandler } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { CallData, RpcProvider, json, type Abi, type AbiEntry, type BigNumberish, type RawArgs } from "starknet";
-import { parseCalldataField } from "@/app/core/requestParser"
-
+import {  json, type Abi } from "starknet";
 import { useStoreDecEnc } from "./encDecContext";
 import { useStoreAbi } from "../Abi/abiContext";
 import { useStoreType } from "./typeContext";
-import { encodeFunctionVM, evalJS } from "@/app/server/virtualMachine";
+import { encodeFunctionVM } from "@/app/server/virtualMachine";
 import { useStoreFunction } from "./functionContext";
-import { ExternalLinkIcon, LinkIcon } from "@chakra-ui/icons";
+import { LinkIcon } from "@chakra-ui/icons";
 
+type Stripe = {
+  message: string,
+  typeName: string
+}
 
 interface FormValues {
   toEncode: string
@@ -31,7 +33,7 @@ function hasFnParameters(functionName: string, abi: Abi): boolean {
   if (!functionDefinition.inputs) { resp = false } else
     if (functionDefinition.inputs.length === 0) { resp = false }
     else { resp = true }
-  console.log(resp);
+  console.log("hasFnParameters=",resp);
   return resp
 }
 
@@ -49,6 +51,8 @@ function recoverInputs(functionName: string, abi: Abi): string[][] {
 }
 
 
+
+
 export default function EncodeFunction() {
   // TODO : to put in context, to reload next time
   const [isEncoded, setIsEncoded] = useState<boolean>(false);
@@ -62,20 +66,78 @@ export default function EncodeFunction() {
   const setEncodeFunctionParam = useStoreDecEnc(state => state.setEncodeFunctionParam);
   const abi = useStoreAbi(state => state.abi);
   const selectedFunction = useStoreFunction(state => state.selectedFunction);
-  const setSelectedTypeIndex = useStoreType(state => state.setSelectedTypeIndex);
   const listType = useStoreType(state => state.listType);
-  const setSelectedLowTab = useStoreType(state => state.setSelectedLowTab);
-  const setSelectedHighTab = useStoreType(state => state.setSelectedHighTab);
   // const setAbiSource = useStoreAbi(state => state.setAbiSource)
   // const myNodeUrl = useFrontendProvider(state => state.nodeUrl);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [stripes, setStripes] = useState<Stripe[]>([]);
+  const setSelectedTypeIndex = useStoreType(state => state.setSelectedTypeIndex);
+  const setSelectedLowTab = useStoreType(state => state.setSelectedLowTab);
+  const setSelectedHighTab = useStoreType(state => state.setSelectedHighTab);
 
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting }
   } = useForm<FormValues>();
+
+  function goToType(typeName: string) {
+    setSelectedHighTab(1);
+    const posInList = listType.findIndex((typ: string) => typ === typeName);
+    setSelectedTypeIndex(posInList.toString());
+    setSelectedLowTab(0);
+  }
+  
+  function defineStripes(wordList: string[], source: string): Stripe[] {
+    type HotPoint = {
+      start: number,
+      end: number,
+    }
+  
+    const hotPointList: HotPoint[] = wordList.reduce((stack: HotPoint[], wordOfList) => {
+      let accum: HotPoint[] = [];
+      let pos: number = -1;
+      let first:boolean =true;
+      while (pos > -1 || first) {
+          pos = source.indexOf(wordOfList, pos + 1);
+          first=false;
+          if (pos > -1) { accum.push({ start: pos, end: pos + wordOfList.length }) }
+      }
+      return [...stack, ...accum]
+  }, []);
+    console.log("hotPoints=", hotPointList);
+    const sortedList: HotPoint[] = hotPointList.sort((a, b) => (a.end > b.end) ? 1 : ((b.end > a.end) ? -1 : 0))
+    if (sortedList.length == 0) {
+      return [{
+        message: source,
+        typeName: ""
+      }] as Stripe[]
+    } else {
+      const stripes: Stripe[] = sortedList.flatMap((hotPoint: HotPoint, index, sortedList: HotPoint[]) => {
+        if (index == sortedList.length - 1) return [
+          {
+            message: source.slice(index !== 0 ? sortedList[index - 1].end : 0, hotPoint.end),
+            typeName: source.slice(hotPoint.start, hotPoint.end)
+          },
+          {
+            message: source.slice(hotPoint.end),
+            typeName: ""
+          }
+        ] as Stripe[];
+        if (index == 0) return {
+          message: source.slice(0, hotPoint.end),
+          typeName: source.slice(hotPoint.start, hotPoint.end)
+        } as Stripe;
+  
+        return {
+          message: source.slice(sortedList[index - 1].end, hotPoint.end),
+          typeName: source.slice(hotPoint.start, hotPoint.end)
+        } as Stripe;
+      }
+      )
+      return stripes
+    }
+  }
 
   async function onSubmitResponse(values: FormValues) {
     setEncodeFunctionParam(values.toEncode);
@@ -92,28 +154,15 @@ export default function EncodeFunction() {
     }
   }
 
-  function goToType(typeName:string) {
-    setSelectedHighTab(1);
-    const posInList = listType.findIndex((typ: string) => typ ===typeName);
-    setSelectedTypeIndex(posInList.toString());
-    setSelectedLowTab(0);
-  }
-
-  function isInList(typName:string):boolean{
-    if (typName[0]==="(") return false ; // tuple not supported for links
-    if (typName.startsWith("core::result")) return false ; // Result not supported for links
-    if (typName.startsWith("core::option")) return false ; // Option not supported for links
-    if (typName.startsWith("core::array")) return false ; // Array & Span not supported for links
-    if (!listType.includes(typName)) return false; // not a custom type
-    return true
-  }
-
   useEffect(() => {
+    console.log("new selectedFunction =",selectedFunction);
     setIsEncoded(false);
     const res = hasFnParameters(selectedFunction, abi);
     setHasParameter(res);
     if (res) {
       const params: string[][] = recoverInputs(selectedFunction, abi);
+      console.log("new fn params =",params);
+      console.log("list of custom types=",listType);
       setParametersTable(params);
       setPreFill("{" + params.map(param => " " + param[0] + ": x") + "}");
     };
@@ -139,12 +188,20 @@ export default function EncodeFunction() {
                     <Tr>{
                       param.map((item: string, idx: number) =>
                         <Td>
-                          {item}
-                          {
-                            idx == 1 && isInList(item) && <Button ml={2} onClick={()=>goToType(item)}>
-                              <LinkIcon></LinkIcon>
-                            </Button>
-                          }
+                          {idx===0 && item}
+                          {idx===1 && 
+                          defineStripes(listType,item).map((smallString: Stripe) =>
+                            <>
+                              {smallString.message}
+                              {
+                                smallString.typeName !== "" &&
+                                <Button ml={2} onClick={() => goToType(smallString.typeName)}>
+                                  <LinkIcon></LinkIcon>
+                                </Button>
+                              }
+                            </>
+                          )
+                           }
                         </Td>)}
                     </Tr>
                 )}

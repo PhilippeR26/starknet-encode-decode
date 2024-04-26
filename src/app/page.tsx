@@ -1,11 +1,13 @@
 "use server";
 import Image from 'next/image'
 import styles from './page.module.css'
-import { Center } from '@chakra-ui/react';
+import { Center, Link } from '@chakra-ui/react';
 import { ChakraProvider } from '@chakra-ui/react'
 import LowerBanner from './components/client/LowerBanner';
 import GetAbi from './components/client/Abi/GetAbi';
 import EncodeDecode from './components/client/EncodeDecode/EncodeDecode';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
+import MiddleBanner from './components/client/MiddleBanner';
 
 export default async function Page() {
 
@@ -43,7 +45,9 @@ export default async function Page() {
                 <p className={styles.bgText}>
                     Starknet Encode/Decode
                 </p>
+               <MiddleBanner></MiddleBanner>
                 <Center>
+                    
                     <GetAbi></GetAbi>
                 </Center>
                 <Center>

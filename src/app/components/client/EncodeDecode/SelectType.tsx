@@ -61,7 +61,7 @@ export default function SelectType() {
               value={selectedTypeIndex}
               placeholder="Select a type"
             >
-              {listType.map((type, idx) => <option value={idx}>{type}</option>)}
+              {listType.map((type, idx) => <option key={"fns"+idx.toString()} value={idx}>{type}</option>)}
             </Select>
           </Stack>
         </Center>
