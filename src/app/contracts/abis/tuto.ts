@@ -155,7 +155,7 @@ export const tutoAbi = [
     },
     {
         "type": "enum",
-        "name": "core::result::Result<PhilTest2::PhilTest2::Order, core::integer::u512>",
+        "name": "core::result::Result::<PhilTest2::PhilTest2::Order, core::integer::u512>",
         "variants": [
             {
                 "name": "Ok",
@@ -294,7 +294,7 @@ export const tutoAbi = [
         "inputs": [
             {
                 "name": "financial",
-                "type": "(core::array::Array::<core::integer::u256>, core::result::Result<PhilTest2::PhilTest2::Order, core::integer::u512>)"
+                "type": "(core::array::Array::<core::integer::u256>, core::result::Result::<PhilTest2::PhilTest2::Order, core::integer::u512>)"
             },
             {
                 "name": "destination",
