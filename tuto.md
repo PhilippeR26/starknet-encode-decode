@@ -28,6 +28,7 @@ But it's also a pedagogical tool, to understand how Starknet is communicating : 
   - [Functions :](#functions-)
     - [Decode function response :](#decode-function-response-)
     - [Encode function request :](#encode-function-request-)
+    - [Decode function calldata :](#decode-function-calldata-)
 
 
 ## Initialization :
@@ -236,11 +237,11 @@ We have explored the `Custom type` tab ; the most difficult part is made. Let's 
 To decode the response of a function, it's not complicated :
 - All functions with a `state_mutability` set to `external`  do not provides any response to Starknet.js (even if the abi lists some outputs).
 - Functions with a `state_mutability` set to `view` provides an encoded response. This response includes only one item. If several values are returned, they are enclosed in a tuple.  
-Select the `Function` tab. Select  `get_owner` function, and click `Decode function` tab.   
+Select the `Function` tab. Select  `get_owner` function, and click `Decode function response` tab.   
 The function is sending just a ContractAddress. Enter `0x37bfdeb9c262566183211b89e85b871518eb0c32cbcb026dce9a486560a03e0` in the Encoded response to test the decoding.  
 You have immediately the response.
 
-Now, select the `echo_un_tuple` function, and click `Decode function` tab. 
+Now, select the `echo_un_tuple` function, and click `Decode function response response` tab. 
 You can see that this case is more complicated : the response is a tuple, that includes a felt252 and an Option.  
 Try `1234567, 0, 0xa0`. The response is conform : a tuple with a number and an Option :
 ![](./tutoImages/decodeFn.png)
@@ -271,6 +272,14 @@ and this code in the `Object` area :
 ```
 The result is :
 ![](./tutoImages/encodeFn2.png)
+
+### Decode function calldata :
+If you have the result of a function encoding, and you would like to decode it to have the parameters used, you have to proceed this way :
+
+Select the `Function` tab. Select  `swap` function, and click `Decode function calldata` tab.   
+Enter `1,200000,0,131234,4000,0,456` in the Encoded calldata to test the decoding.  
+You have immediately the response.
+![](./tutoImages/decFnCalldata.png)
 
 
 Congratulation. You are now an expert of encoding and decoding Starknet data.

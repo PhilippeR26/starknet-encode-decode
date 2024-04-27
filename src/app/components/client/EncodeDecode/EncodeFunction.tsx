@@ -3,52 +3,24 @@
 import { RadioGroup, Stack, Radio, Center, Button, FormControl, FormErrorMessage, FormLabel, Input, Box, Textarea, Tooltip, TableContainer, Table, TableCaption, Th, Thead, Tr, Tbody, Td, useDisclosure, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {  json, type Abi } from "starknet";
+import { json, type Abi } from "starknet";
 import { useStoreDecEnc } from "./encDecContext";
 import { useStoreAbi } from "../Abi/abiContext";
 import { useStoreType } from "./typeContext";
 import { encodeFunctionVM } from "@/app/server/virtualMachine";
 import { useStoreFunction } from "./functionContext";
 import { LinkIcon } from "@chakra-ui/icons";
+import { defineStripes, hasFnParameters, recoverInputs, type Stripe } from "./encodeUtils";
 
-type Stripe = {
-  message: string,
-  typeName: string
-}
+
 
 interface FormValues {
   toEncode: string
 }
 
-function hasFnParameters(functionName: string, abi: Abi): boolean {
-  const abiFlat = abi.flatMap((e) => {
-    if (e.type === 'interface') {
-      return e.items;
-    }
-    return e;
-  });
-  const functionDefinition = abiFlat.find((e) => e.name === functionName);
-  console.log(functionDefinition);
-  let resp: boolean;
-  if (!functionDefinition.inputs) { resp = false } else
-    if (functionDefinition.inputs.length === 0) { resp = false }
-    else { resp = true }
-  console.log("hasFnParameters=",resp);
-  return resp
-}
 
-function recoverInputs(functionName: string, abi: Abi): string[][] {
-  const abiFlat = abi.flatMap((e) => {
-    if (e.type === 'interface') {
-      return e.items;
-    }
-    return e;
-  });
-  const functionDefinition = abiFlat.find((e) => e.name === functionName);
-  console.log("recoverParams=", functionDefinition);
-  const data: string[][] = functionDefinition.inputs.map((input: { name: string, type: string }) => [input.name, input.type]);
-  return data
-}
+
+
 
 
 
@@ -87,57 +59,8 @@ export default function EncodeFunction() {
     setSelectedTypeIndex(posInList.toString());
     setSelectedLowTab(0);
   }
-  
-  function defineStripes(wordList: string[], source: string): Stripe[] {
-    type HotPoint = {
-      start: number,
-      end: number,
-    }
-  
-    const hotPointList: HotPoint[] = wordList.reduce((stack: HotPoint[], wordOfList) => {
-      let accum: HotPoint[] = [];
-      let pos: number = -1;
-      let first:boolean =true;
-      while (pos > -1 || first) {
-          pos = source.indexOf(wordOfList, pos + 1);
-          first=false;
-          if (pos > -1) { accum.push({ start: pos, end: pos + wordOfList.length }) }
-      }
-      return [...stack, ...accum]
-  }, []);
-    console.log("hotPoints=", hotPointList);
-    const sortedList: HotPoint[] = hotPointList.sort((a, b) => (a.end > b.end) ? 1 : ((b.end > a.end) ? -1 : 0))
-    if (sortedList.length == 0) {
-      return [{
-        message: source,
-        typeName: ""
-      }] as Stripe[]
-    } else {
-      const stripes: Stripe[] = sortedList.flatMap((hotPoint: HotPoint, index, sortedList: HotPoint[]) => {
-        if (index == sortedList.length - 1) return [
-          {
-            message: source.slice(index !== 0 ? sortedList[index - 1].end : 0, hotPoint.end),
-            typeName: source.slice(hotPoint.start, hotPoint.end)
-          },
-          {
-            message: source.slice(hotPoint.end),
-            typeName: ""
-          }
-        ] as Stripe[];
-        if (index == 0) return {
-          message: source.slice(0, hotPoint.end),
-          typeName: source.slice(hotPoint.start, hotPoint.end)
-        } as Stripe;
-  
-        return {
-          message: source.slice(sortedList[index - 1].end, hotPoint.end),
-          typeName: source.slice(hotPoint.start, hotPoint.end)
-        } as Stripe;
-      }
-      )
-      return stripes
-    }
-  }
+
+
 
   async function onSubmitResponse(values: FormValues) {
     setEncodeFunctionParam(values.toEncode);
@@ -155,14 +78,14 @@ export default function EncodeFunction() {
   }
 
   useEffect(() => {
-    console.log("new selectedFunction =",selectedFunction);
+    console.log("new selectedFunction =", selectedFunction);
     setIsEncoded(false);
     const res = hasFnParameters(selectedFunction, abi);
     setHasParameter(res);
     if (res) {
       const params: string[][] = recoverInputs(selectedFunction, abi);
-      console.log("new fn params =",params);
-      console.log("list of custom types=",listType);
+      console.log("new fn params =", params);
+      console.log("list of custom types=", listType);
       setParametersTable(params);
       setPreFill("{" + params.map(param => " " + param[0] + ": x") + "}");
     };
@@ -184,24 +107,24 @@ export default function EncodeFunction() {
               </Thead>
               <Tbody>
                 {parametersTable.map(
-                  (param: string[]) =>
-                    <Tr>{
+                  (param: string[], idx: number) =>
+                    <Tr key={"idxFnEnc" + idx.toString()}>{
                       param.map((item: string, idx: number) =>
-                        <Td>
-                          {idx===0 && item}
-                          {idx===1 && 
-                          defineStripes(listType,item).map((smallString: Stripe) =>
-                            <>
-                              {smallString.message}
-                              {
-                                smallString.typeName !== "" &&
-                                <Button ml={2} onClick={() => goToType(smallString.typeName)}>
-                                  <LinkIcon></LinkIcon>
-                                </Button>
-                              }
-                            </>
-                          )
-                           }
+                        <Td >
+                          {idx === 0 && item}
+                          {idx === 1 &&
+                            defineStripes(listType, item).map((smallString: Stripe) =>
+                              <>
+                                {smallString.message}
+                                {
+                                  smallString.typeName !== "" &&
+                                  <Button ml={2} onClick={() => goToType(smallString.typeName)}>
+                                    <LinkIcon></LinkIcon>
+                                  </Button>
+                                }
+                              </>
+                            )
+                          }
                         </Td>)}
                     </Tr>
                 )}

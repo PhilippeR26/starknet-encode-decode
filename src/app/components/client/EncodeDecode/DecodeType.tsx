@@ -103,7 +103,6 @@ export default function DecodeType() {
               borderRadius='lg'
               maxW="100%"
               overflowX="auto"
-              hidden={!isDecoded}
             >
               <pre>
                 const myCallData = new CallData(abi);<br></br>

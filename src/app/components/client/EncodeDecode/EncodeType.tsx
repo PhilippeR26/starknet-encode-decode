@@ -23,8 +23,6 @@ function recoverInputs(typeName: string, abi: Abi): string[][] {
     }
     return e;
   });
-  // const structs = CallData.getAbiStruct(abi);
-  // const enums = CallData.getAbiEnum(abi);
   const abiExtract = abiFlat.find((abiItem) => abiItem.name === typeName);
   const type = abiExtract.type;
   const members = abiExtract.members;
@@ -66,7 +64,7 @@ export default function EncodeType() {
       console.log("Error encode type");
       setIsEncoded(false);
 
-        onOpen();
+      onOpen();
     }
   }
 
@@ -120,15 +118,15 @@ export default function EncodeType() {
           </FormControl>
 
           <FormControl >
-          <FormLabel htmlFor="toInitialize"> optional initializations, coded in JS/TS :
-          </FormLabel>
-          <Textarea w="100%" minH={150} maxH={400}
-            bg="gray.300"
-            id="toInitialize"
-            placeholder="JS/TS code"
-            onChange={e => setInitCode(e.target.value)}
-          />
-        </FormControl>
+            <FormLabel htmlFor="toInitialize"> optional initializations, coded in JS/TS :
+            </FormLabel>
+            <Textarea w="100%" minH={150} maxH={400}
+              bg="gray.300"
+              id="toInitialize"
+              placeholder="JS/TS code"
+              onChange={e => setInitCode(e.target.value)}
+            />
+          </FormControl>
 
           <Button mt={4} colorScheme="blue" isLoading={isSubmitting} type="submit">
             Encode custom type
