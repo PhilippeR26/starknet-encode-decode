@@ -52,3 +52,20 @@ export async function encodeFunctionVM(initialize: string, expr: string, abi: Ab
   console.log("res =", res);
   return Array.isArray(res) ? res : [res];
 }
+
+export async function encodeFnResponseVM(initialize: string, expr: string, abi: Abi, responseType: string): Promise<string[]> {
+  console.log("encodeFnResponseVM***");
+  console.log("initialize=", initialize, "expr=", expr, "responseType=", responseType);
+  const inputObject = await evalJS(initialize, expr);
+  const param = [inputObject];
+  console.log("param =", param);
+  const iter = param[Symbol.iterator]();
+  const structs = CallData.getAbiStruct(abi);
+  const enums = CallData.getAbiEnum(abi);
+  const abiExtract = abi.find((abiItem) => abiItem.name === responseType);
+  const inputAbi: AbiEntry = abiExtract ? { name: abiExtract.type, type: abiExtract.name } : { name: "literal", type: responseType };
+  console.log("inputAbi=", inputAbi);
+  const res = parseCalldataField(iter, inputAbi, structs, enums);
+  console.log("resEncodeType=", res);
+  return Array.isArray(res) ? res : [res];
+}

@@ -6,6 +6,7 @@ import EncodeType from "./EncodeType";
 import DecodeFunctionResponse from "./DecodeFunctionResponse";
 import EncodeFunction from "./EncodeFunction";
 import DecodeFunctionCalldata from "./DecodeFunctionCalldata";
+import EncodeFunctionResponse from "./EncodeFunctionResponse";
 
 
 export default function EncDecFunction() {
@@ -23,6 +24,7 @@ export default function EncDecFunction() {
                     <Tab>Encode function</Tab>
                     <Tab>Decode function response</Tab>
                     <Tab>Decode function calldata</Tab>
+                    <Tab>Encode function response</Tab>
                 </TabList>
                 <TabPanels>
                     <TabPanel>
@@ -35,6 +37,9 @@ export default function EncDecFunction() {
                     </TabPanel>
                     <TabPanel>
                         <DecodeFunctionCalldata></DecodeFunctionCalldata>
+                    </TabPanel>
+                    <TabPanel>
+                        <EncodeFunctionResponse></EncodeFunctionResponse>
                     </TabPanel>
                 </TabPanels>
             </Tabs>

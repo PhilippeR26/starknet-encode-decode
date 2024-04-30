@@ -29,6 +29,7 @@ But it's also a pedagogical tool, to understand how Starknet is communicating : 
     - [Decode function response :](#decode-function-response-)
     - [Encode function request :](#encode-function-request-)
     - [Decode function calldata :](#decode-function-calldata-)
+    - [Encode a function response :](#encode-a-function-response-)
 
 
 ## Initialization :
@@ -194,7 +195,7 @@ For decoding, click `Decode type` tab.
 You can enter for example `4, 7165025766919037752308702341934`. Then click on `Decode custom type`. The decoded Enum is a `CairoCustomEnum` instance, with `Message` variant selected, containing a string.  
 
 ### ByteArray :
-ByteArray is useful for strings of any length (in particular for strings larger than 31 characters). The encoding/decoding of a ByteArray is really not trivial, and Starknet.js provides here a way to do this very easily.
+ByteArray is useful for strings of any length (in particular for strings larger than 31 characters). The encoding/decoding of a ByteArray is really not simple, and Starknet.js provides here a way to do this very easily.
 For encoding, Select  `core::byte_array::ByteArray` type, and click `Encode type` tab.
 Try to encode this string : `"O Fortuna velut Luna statu variabilis,  semper crescis aut decrescis.";`. Encoding result is :
 ```json
@@ -281,6 +282,12 @@ Enter `1,200000,0,131234,4000,0,456` in the Encoded calldata to test the decodin
 You have immediately the response.
 ![](./tutoImages/decFnCalldata.png)
 
+### Encode a function response :
+You can see how Starknet is encoding the response of a function.
+Select the `Function` tab. Select  `echo_un_tuple` function, and click `Encode function response` tab.   
+Enter `cairo.tuple(300,new CairoOption<BigNumberish>(CairoOptionVariant.Some,50));` in the Encoded response field to test the encoding.  
+The response is :
+![](./tutoImages/encodeFnResponse.png)
 
-Congratulation. You are now an expert of encoding and decoding Starknet data.
+**Congratulation. You are now an expert of encoding and decoding of Starknet data.**
 

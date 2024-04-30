@@ -303,16 +303,5 @@ export const tutoAbi = [
         ],
         "outputs": [],
         "state_mutability": "external"
-    },
-    {
-        "type": "function",
-        "name": "get_owner",
-        "inputs": [],
-        "outputs": [
-            {
-                "type": "core::starknet::contract_address::ContractAddress"
-            }
-        ],
-        "state_mutability": "view"
     }
 ]

@@ -9,6 +9,8 @@ interface TypeState {
     setDecodeFunctionParam: (decodeTypeParam: string) => void,
     encodeFunctionParam: string,
     setEncodeFunctionParam: (encodeTypeParam: string) => void,
+    encodeFunctionResponse: string,
+    setEncodeFunctionResponse: (encodeTypeParam: string) => void,
 }
 
 export const useStoreDecEnc = create<TypeState>()(set => ({
@@ -20,4 +22,6 @@ export const useStoreDecEnc = create<TypeState>()(set => ({
     setDecodeFunctionParam: (decodeFunctionParam: string) => { set(state => ({ decodeFunctionParam })) },
     encodeFunctionParam: "",
     setEncodeFunctionParam: (encodeFunctionParam: string) => { set(state => ({ encodeFunctionParam })) },
+    encodeFunctionResponse: "",
+    setEncodeFunctionResponse: (encodeFunctionResponse: string) => { set(state => ({ encodeFunctionResponse })) },
 }));
