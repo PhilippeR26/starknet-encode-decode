@@ -16,35 +16,35 @@ interface FormValues {
   encoded: string
 }
 
-function isFnResponding(functionName: string, abi: Abi): boolean {
-  const abiFlat = abi.flatMap((e) => {
-    if (e.type === 'interface') {
-      return e.items;
-    }
-    return e;
-  });
-  const functionDefinition = abiFlat.find((e) => e.name === functionName);
-  console.log(functionDefinition);
-  let resp: boolean;
-  if (!functionDefinition.outputs) { resp = false } else
-    if (functionDefinition.outputs.length === 0) { resp = false }
-    else { resp = true }
-  console.log(resp);
-  return resp
-}
+// function isFnResponding(functionName: string, abi: Abi): boolean {
+//   const abiFlat = abi.flatMap((e) => {
+//     if (e.type === 'interface') {
+//       return e.items;
+//     }
+//     return e;
+//   });
+//   const functionDefinition = abiFlat.find((e) => e.name === functionName);
+//   console.log(functionDefinition);
+//   let resp: boolean;
+//   if (!functionDefinition.outputs) { resp = false } else
+//     if (functionDefinition.outputs.length === 0) { resp = false }
+//     else { resp = true }
+//   console.log(resp);
+//   return resp
+// }
 
-function recoverOutputs(functionName: string, abi: Abi): string[] {
-  const abiFlat = abi.flatMap((e) => {
-    if (e.type === 'interface') {
-      return e.items;
-    }
-    return e;
-  });
-  const functionDefinition = abiFlat.find((e) => e.name === functionName);
-  console.log("recoverParams=", functionDefinition);
-  const data: string[] = functionDefinition.outputs.map((output: { type: string }) => [output.type]);
-  return data
-}
+// function recoverOutputs(functionName: string, abi: Abi): string[] {
+//   const abiFlat = abi.flatMap((e) => {
+//     if (e.type === 'interface') {
+//       return e.items;
+//     }
+//     return e;
+//   });
+//   const functionDefinition = abiFlat.find((e) => e.name === functionName);
+//   console.log("recoverParams=", functionDefinition);
+//   const data: string[] = functionDefinition.outputs.map((output: { type: string }) => [output.type]);
+//   return data
+// }
 
 
 export default function DecodeFunctionCalldata() {
@@ -94,6 +94,7 @@ export default function DecodeFunctionCalldata() {
     setHasParameter(res);
     if (res) {
       const params: string[][] = recoverInputs(selectedFunction, abi);
+      console.log("params recovered")
       setParametersTable(params);
     };
   }, [selectedFunction])

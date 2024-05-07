@@ -107,10 +107,10 @@ export default function EncodeFunction() {
               </Thead>
               <Tbody>
                 {parametersTable.map(
-                  (param: string[], idx: number) =>
-                    <Tr key={"idxFnEnc" + idx.toString()}>{
-                      param.map((item: string, idx2: number) =>
-                        <Td key={"idxFnEncTd"+idx.toString()+"." + idx2.toString()}>
+                  (param: string[]) =>
+                    <Tr>{
+                      param.map((item: string, idx: number) =>
+                        <Td key={"idxFnEncTd"+idx.toString()}>
                           {idx === 0 && item}
                           {idx === 1 &&
                             defineStripes(listType, item).map((smallString: Stripe) =>

@@ -77,7 +77,7 @@ export default function EncodeFunctionResponse() {
   async function onSubmitResponse(values: FormValues) {
     setEncodeFunctionResponse(values.toEncode);
     try {
-      console.log("parametersTable[0]=",parametersTable,parametersTable[0][0]);
+      console.log("parametersTable[0]=", parametersTable, parametersTable[0][0]);
       const res = await encodeFnResponseVM(initCode, values.toEncode, abi, parametersTable[0][0]);
       console.log("res =", res);
 
@@ -200,8 +200,6 @@ export default function EncodeFunctionResponse() {
                 >
                   <pre>
                     {initCode} <br></br>
-                    {/* const myCallData = new CallData(abi);<br></br>
-                const encodedArray = [{encodeTypeParam}]; <br></br> */}
                     const params = [{encodeFunctionResponse}]; <br></br>
                     const selectedType = "{parametersTable[0]}"; <br></br>
                     const iter = params[Symbol.iterator](); <br></br>
@@ -211,7 +209,7 @@ export default function EncodeFunctionResponse() {
                     const inputAbi: AbiEntry = abiExtract ? <br></br>
                     {"   "} &#123; name: abiExtract.type, type: abiExtract.name &#125; :<br></br>
                     {"   "} &#123; name: "literal", type: responseType &#125;;<br></br>
-                    
+
                     const result = parseCalldataField(iter, inputAbi, structs, enums);<br></br>
                   </pre>
                 </Box>
