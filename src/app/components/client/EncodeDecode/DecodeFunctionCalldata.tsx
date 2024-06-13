@@ -51,6 +51,7 @@ export default function DecodeFunctionCalldata() {
   // TODO : to put in context, to reload next time
   const [isDecoded, setIsDecoded] = useState<boolean>(false);
   const [decoded, setDecoded] = useState<string>("");
+  const [formattedInput, setFormattedInput] = useState<string>("");
   const decodeFunctionParam = useStoreDecEnc(state => state.decodeFunctionParam)
   const setDecodeFunctionParam = useStoreDecEnc(state => state.setDecodeFunctionParam)
   const abi = useStoreAbi(state => state.abi)
@@ -73,6 +74,8 @@ export default function DecodeFunctionCalldata() {
     const myCallData = new CallData(abi);
     const params = values.encoded.split(",").map(str => str.trim());
     const formattedParams = params.map(e => num.toHex(e.replaceAll(/"|'/g, ""))); //remove ' and " and convert to Hex.
+    const inputToString='["'+formattedParams.reduce((acc:string,inp:string)=>acc+inp+'","',"").slice(0,-2)+"]"
+    setFormattedInput(inputToString);
     const { inputs } = myCallData.parser.getLegacyFormat().find((abiItem: AbiEntry) => abiItem.name === selectedFunction) as FunctionAbi;
     const inputsTypes = inputs.map((inp: any) => { return inp.type as string });
     const res = myCallData.decodeParameters(inputsTypes, formattedParams);
@@ -204,8 +207,8 @@ export default function DecodeFunctionCalldata() {
                   overflowX="auto"
                 >
                   <pre>
+                    const formattedParams = {formattedInput};<br></br>
                     const myCallData = new CallData(abi);<br></br>
-
                     const &#123; inputs &#125; = myCallData.parser.getLegacyFormat().find((abiItem: AbiEntry) =&gt; <br></br>abiItem.name === selectedFunction) as FunctionAbi;<br></br>
                     const inputsTypes = inputs.map((inp: any) =&gt; &#123; return inp.type as string &#125;);<br></br>
                     const res = myCallData.decodeParameters(inputsTypes, formattedParams);
