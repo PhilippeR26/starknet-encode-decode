@@ -41,7 +41,6 @@ export default async function Page() {
 
     return (
         <ChakraProvider>
-            <div>
                 <p className={styles.bgText}>
                     Starknet Encode/Decode
                 </p>
@@ -53,7 +52,6 @@ export default async function Page() {
                 <Center>
                     <EncodeDecode></EncodeDecode>
                 </Center>
-            </div >
             <br />
             <br />
             <LowerBanner></LowerBanner>

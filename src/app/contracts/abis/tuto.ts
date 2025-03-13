@@ -247,6 +247,24 @@ export const tutoAbi = [
         ]
     },
     {
+        "type": "struct",
+        "name": "PhilTest2::PhilTest2::bitcoin_block_header",
+        "members": [
+            {
+                "name": "reversed_version",
+                "type": "core::integer::u32"
+            },
+            {
+                "name": "merkle_root",
+                "type": "[core::integer::u32; 8]"
+            },
+            {
+                "name": "nonce",
+                "type": "core::integer::u32"
+            }
+        ]
+    },
+    {
         "type": "function",
         "name": "echo_un_tuple",
         "inputs": [
@@ -288,7 +306,7 @@ export const tutoAbi = [
             }
         ],
         "state_mutability": "view"
-    },{
+    }, {
         "type": "function",
         "name": "complex",
         "inputs": [
@@ -303,5 +321,21 @@ export const tutoAbi = [
         ],
         "outputs": [],
         "state_mutability": "external"
+    },
+    {
+        "type": "function",
+        "name": "get_bitcoin",
+        "inputs": [
+            {
+               "name": "hash",
+                "type": "[core::integer::u32; 8]" 
+            }
+        ],
+        "outputs": [
+            {
+                "type": "core::starknet::contract_address::ContractAddress"
+            }
+        ],
+        "state_mutability": "view"
     }
 ]

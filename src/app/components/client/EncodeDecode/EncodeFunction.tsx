@@ -100,7 +100,7 @@ export default function EncodeFunction() {
             <Table variant="striped" colorScheme="purple">
               <TableCaption>needed parameters</TableCaption>
               <Thead>
-                <Tr>
+                <Tr key={"paramName"}>
                   <Th>Name</Th>
                   <Th>Type</Th>
                 </Tr>

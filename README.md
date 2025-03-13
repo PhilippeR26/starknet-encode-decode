@@ -8,7 +8,7 @@
 Serialize data to send to Starknet network (ex 100_u256 -> 100,0)  
 Deserialize a Starknet response (ex 100,0 -> 100_u256)
 
-This DAPP provides the corresponding [Starknet.js](https://www.starknetjs.com/) code to perform each operation. So it has also a pedagogical purpose.
+This DAPP provides the corresponding [Starknet.js](https://starknetjs.com/) code to perform each operation. So it has also a pedagogical purpose.
 
 > **Stars are highly appreciated! Thanks in advance.**
 

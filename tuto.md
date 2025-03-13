@@ -11,25 +11,7 @@ But it's also a pedagogical tool, to understand how Starknet is communicating : 
 - [Tuto for Starknet-encode-decode](#tuto-for-starknet-encode-decode)
   - [Initialization :](#initialization-)
   - [Types :](#types-)
-    - [literal :](#literal-)
-    - [Structs :](#structs-)
-      - [struct :](#struct-)
-      - [u256 :](#u256-)
-      - [u512 :](#u512-)
-    - [Enums :](#enums-)
-      - [Option :](#option-)
-      - [Result :](#result-)
-      - [Custom enum :](#custom-enum-)
-    - [Tuple :](#tuple-)
-    - [Array and Span :](#array-and-span-)
-    - [Bytes31 :](#bytes31-)
-    - [ByteArray :](#bytearray-)
-    - [Complex mix :](#complex-mix-)
   - [Functions :](#functions-)
-    - [Decode function response :](#decode-function-response-)
-    - [Encode function request :](#encode-function-request-)
-    - [Decode function calldata :](#decode-function-calldata-)
-    - [Encode a function response :](#encode-a-function-response-)
 
 
 ## Initialization :
@@ -122,7 +104,7 @@ Select the `core::integer::u512` type. Very similar to uint256, it's a "very lar
 For decoding, click `Decode type` tab. You can enter for example `16926926749214863536422913, 20000000000000000000000000, 0, 0`. Then click on `Decode custom type`. The decoded u512 is displayed : `6805647338418769269267492148635364229136926926749214863536422913n`
 
 For encoding, click `Encode type` tab.
-You can use 3 similar to u256 ways to proceed : `limb0:16926926749214863536422913, limb1:20000000000000000000000000, limb2: 0, limb3:0}` or `cairo.uint512(6805647338418769269267492148635364229136926926749214863536422913n)` or `6805647338418769269267492148635364229136926926749214863536422913n`
+You can use 3 similar to u256 ways to proceed : `{limb0:16926926749214863536422913, limb1:20000000000000000000000000, limb2: 0, limb3:0}` or `cairo.uint512(6805647338418769269267492148635364229136926926749214863536422913n)` or `6805647338418769269267492148635364229136926926749214863536422913n`
 
 ### Enums :
 We have seen the Structs ; let's now see something more complicated : the Enums. There is 3 types of Enums.
@@ -165,7 +147,7 @@ You can enter for example `0, 10, 20`. Then click on `Decode custom type`. The d
 A tuple is a group of values of random types, enclosed in parenthesis.  
 We will test a tuple, with the same case used for the Custom enum test.
 
-For encoding, Select  `PhilTest2::PhilTest2::MyEnum` type, and click `Encode type` tab.
+For encoding, select  `PhilTest2::PhilTest2::MyEnum` type, and click `Encode type` tab.
 Try to encode this Enum with the variant `Error`, including a tuple of two literal : `new CairoCustomEnum({ Error: cairo.tuple(400,13) });`. Encoding result is `2, 400, 13`. 
 
 For decoding, click `Decode type` tab.
@@ -176,18 +158,27 @@ As you can see, Starknet.js represents a tuple with an object, where keys are st
 Arrays & Spans are similar to JS arrays.  
 We will test an array, still with the case used for the Custom enum test.
 
-For encoding, Select  `PhilTest2::PhilTest2::MyEnum` type, and click `Encode type` tab.
+For encoding, select  `PhilTest2::PhilTest2::MyEnum` type, and click `Encode type` tab.
 Try to encode this Enum with the variant `Critical`, including an array of 4 u32 literals : `new CairoCustomEnum({ Critical: [30, 40, 50, 60]});`. Encoding result is `3, 4, 30, 40, 50, 60`.  
 3 is the variant id, 4 is the number of items in th array, then follow the content of the array.
 
 For decoding, click `Decode type` tab.
 You can enter for example `3, 2, 10, 20`. Then click on `Decode custom type`. The decoded Enum is a `CairoCustomEnum` instance, with `Critical` variant selected, containing an array of 2 numbers : `[10, 20]`.  
 
+### Fixed array :
+
+Fixed array is nearly identical to JS arrays. Very useful to handle Bitcoin data. 
+
+For encoding, select  `PhilTest2::PhilTest2::bitcoin_block_header` type, and click `Encode type` tab. Try to create an object that meet this type. One valid answer is: `{reversed_version: 18, merkle_root: [1,2,3,4,5,6,7,8], nonce: 3}`. Encoding result is `18, 1, 2, 3, 4, 5, 6, 7, 8, 3`.  
+
+For decoding, click `Decode type` tab.
+You can enter for example `200, 11, 12, 13, 14, 15, 16, 17, 18, 54`. Then click on `Decode custom type`. The result should be `{reversed_version: 200, merkle_root: [11, 12, 13, 14, 15, 16, 17,18], nonce: 54}`.
+
 ### Bytes31 :
 bytes31 is useful for strings with 31 characters max.  
 We will test a bytes31, once again with the case used for the Custom enum test.
 
-For encoding, Select  `PhilTest2::PhilTest2::MyEnum` type, and click `Encode type` tab.
+For encoding, select  `PhilTest2::PhilTest2::MyEnum` type, and click `Encode type` tab.
 Try to encode this bytes31 with the variant `Message`, including a string : `new CairoCustomEnum({ Message: "Your credit has expired."});`. Encoding result is `4, "0x596f7572206372656469742068617320657870697265642e"`.  
 4 is the variant id, followed by the encoded string.
 
@@ -196,7 +187,7 @@ You can enter for example `4, 7165025766919037752308702341934`. Then click on `D
 
 ### ByteArray :
 ByteArray is useful for strings of any length (in particular for strings larger than 31 characters). The encoding/decoding of a ByteArray is really not simple, and Starknet.js provides here a way to do this very easily.
-For encoding, Select  `core::byte_array::ByteArray` type, and click `Encode type` tab.
+For encoding, select  `core::byte_array::ByteArray` type, and click `Encode type` tab.
 Try to encode this string : `"O Fortuna velut Luna statu variabilis,  semper crescis aut decrescis.";`. Encoding result is :
 ```json
 [

@@ -90,8 +90,8 @@ export default function EncodeType() {
             <Tbody>
               {parametersTable.map(
                 (param: string[]) =>
-                  <Tr>{
-                    param.map((item: string) => <Td>{item}</Td>)}
+                  <Tr key={param[0]}>{
+                    param.map((item: string) => <Td key={item}>{item}</Td>)}
                   </Tr>
               )}
             </Tbody>

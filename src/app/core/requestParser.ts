@@ -28,6 +28,10 @@ import {
 } from 'starknet';
 import extractTupleMemberTypes from './tuple';
 
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
 /**
  * parse base types
  * @param type type from abi
@@ -282,7 +286,7 @@ export function parseCalldataField(
       if (!Array.isArray(value) && !shortString.isText(value)) {
         throw Error(`ABI expected parameter ${name} to be array or long string, got ${value}`);
       }
-      if (shortString.isString(value)) {
+      if (isString(value)) {
         // long string match cairo felt*
         value = shortString.splitLongString(value);
       }
