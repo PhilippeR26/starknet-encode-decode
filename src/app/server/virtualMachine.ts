@@ -40,8 +40,8 @@ export async function encodeTypeVM(initialize: string, expr: string, abi: Abi, s
   const abiExtract = abi.find((abiItem) => abiItem.name === selectedType);
   const inputAbi: AbiEntry = { name: abiExtract.type, type: abiExtract.name };
   console.log("inputAbiTTTTT=", inputAbi);
-  const abiParser= createAbiParser(abi,hdParsingStrategy);
-  const res = parseCalldataField({argsIterator:iter, input: inputAbi, structs:structs, enums:enums, parser:abiParser});
+  const abiParser = createAbiParser(abi, hdParsingStrategy);
+  const res = parseCalldataField({ argsIterator: iter, input: inputAbi, structs: structs, enums: enums, parser: abiParser });
   console.log("resEncodeType=", res);
   return Array.isArray(res) ? res : [res];
 }
@@ -66,8 +66,8 @@ export async function encodeFnResponseVM(initialize: string, expr: string, abi: 
   const abiExtract = abi.find((abiItem) => abiItem.name === responseType);
   const inputAbi: AbiEntry = abiExtract ? { name: abiExtract.type, type: abiExtract.name } : { name: "literal", type: responseType };
   console.log("inputAbi=", inputAbi);
-  const abiParser= createAbiParser(abi,hdParsingStrategy);
-  const res = parseCalldataField({argsIterator:iter, input: inputAbi, structs:structs, enums:enums, parser:abiParser});
+  const abiParser = createAbiParser(abi, hdParsingStrategy);
+  const res = parseCalldataField({ argsIterator: iter, input: inputAbi, structs: structs, enums: enums, parser: abiParser });
   console.log("resEncodeType=", res);
   return Array.isArray(res) ? res : [res];
 }

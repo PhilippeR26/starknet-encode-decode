@@ -42,7 +42,8 @@ const abiExtract = abi.find((abiItem) => abiItem.name === selectedType);
 const inputAbi: AbiEntry = abiExtract ? 
     { name: abiExtract.type, type: abiExtract.name } :
     { name: "literal", type: responseType };
-const result = parseCalldataField(iter, inputAbi, structs, enums);
+const abiParser = createAbiParser(abi, hdParsingStrategy);
+const res = parseCalldataField({ argsIterator: iter, input: inputAbi, structs, enums, parser: abiParser });
 ```
 `res = ["300","0","50"]`
 
@@ -56,7 +57,8 @@ const structs = CallData.getAbiStruct(abi);
 const enums = CallData.getAbiEnum(abi);
 const abiExtract = abi.find((abiItem) => abiItem.name === selectedType); 
 const inputAbi:AbiEntry = {name:abiExtract.type,type: abiExtract.name};
-const result = parseCalldataField(iter, inputAbi, structs, enums);
+const abiParser = createAbiParser(abi, hdParsingStrategy);
+const res = parseCalldataField({ argsIterator: iter, input: inputAbi, structs, enums, parser: abiParser });
 ```
 `res = ["10","20"]`
 
