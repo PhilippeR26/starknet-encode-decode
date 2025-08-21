@@ -69,7 +69,7 @@ const myCallData = new CallData(abi);
 const encodedArray = [34,67889]; 
 const res = myCallData.decodeParameters("PhilTest2::PhilTest2::Order", encodedArray);
 ```
-`res = {"p1": 34,"p2": 67889}
+`res = {"p1": 34,"p2": 67889}`
 
 ## Nota :
 These examples are extracted from the encode/decode tool : https://starknet-encode-decode.vercel.app/
