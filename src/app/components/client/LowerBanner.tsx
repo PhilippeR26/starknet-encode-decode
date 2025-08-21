@@ -26,7 +26,7 @@ export default function LowerBanner() {
             - 
             <Link color="blue.700" href='https://github.com/PhilippeR26/starknet-encode-decode/blob/main/tuto.md' isExternal> Tuto<ExternalLinkIcon mx='2px'></ExternalLinkIcon></Link>
             - Powered by
-            <Link color="blue.700" href='https://starknetjs.com' isExternal> Starknet.js v6.24.0<ExternalLinkIcon mx='2px'></ExternalLinkIcon></Link>
+            <Link color="blue.700" href='https://starknetjs.com' isExternal> Starknet.js v8.5.0<ExternalLinkIcon mx='2px'></ExternalLinkIcon></Link>
           </Box>
     )
 }

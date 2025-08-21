@@ -5,6 +5,7 @@ import {
   AllowArray,
   BigNumberish,
   ByteArray,
+  CairoBytes31,
   CairoEnum,
   ParsedStruct,
   Tupled,
@@ -44,7 +45,7 @@ function parseBaseTypes(type: string, val: BigNumberish): AllowArray<string> {
       return new CairoUint256(val).toApiRequest();
     case CairoUint512.isAbiType(type):
       return new CairoUint512(val).toApiRequest();
-    case cairo.isTypeBytes31(type):
+    case CairoBytes31.isAbiType(type):
       return shortString.encodeShortString(val.toString());
     case cairo.isTypeSecp256k1Point(type): {
       const pubKeyETH = encode.removeHexPrefix(num.toHex(val)).padStart(128, '0');

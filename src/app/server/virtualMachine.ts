@@ -2,7 +2,7 @@
 
 import * as ts from "typescript";
 import * as vm from "vm";
-import { CairoOption, CairoOptionVariant, CairoResult, CairoResultVariant, CairoCustomEnum, cairo, shortString, CallData, parseCalldataField, type AbiEntry, type Abi, byteArray } from "starknet";
+import { CairoOption, CairoOptionVariant, CairoResult, CairoResultVariant, CairoCustomEnum, cairo, shortString, CallData, parseCalldataField, type AbiEntry, type Abi, byteArray, hdParsingStrategy, createAbiParser } from "starknet";
 
 export async function evalJS(initialize: string, expr: string): Promise<any> {
   const imports = `import {CairoOption, CairoOptionVariant, CairoResult, CairoResultVariant, CairoCustomEnum, cairo, BigNumberish, Uint256, Uint512, shortString, byteArray} from 'starknet';`
@@ -39,8 +39,9 @@ export async function encodeTypeVM(initialize: string, expr: string, abi: Abi, s
   const enums = CallData.getAbiEnum(abi);
   const abiExtract = abi.find((abiItem) => abiItem.name === selectedType);
   const inputAbi: AbiEntry = { name: abiExtract.type, type: abiExtract.name };
-  console.log("inputAbi=", inputAbi);
-  const res = parseCalldataField(iter, inputAbi, structs, enums);
+  console.log("inputAbiTTTTT=", inputAbi);
+  const abiParser= createAbiParser(abi,hdParsingStrategy);
+  const res = parseCalldataField({argsIterator:iter, input: inputAbi, structs:structs, enums:enums, parser:abiParser});
   console.log("resEncodeType=", res);
   return Array.isArray(res) ? res : [res];
 }
@@ -49,7 +50,7 @@ export async function encodeFunctionVM(initialize: string, expr: string, abi: Ab
   const myCallData = new CallData(abi);
   const inputObject = await evalJS(initialize, expr);
   const res = myCallData.compile(selectedFunction, inputObject);
-  console.log("res =", res);
+  console.log("res encodeFunctionVM =", res);
   return Array.isArray(res) ? res : [res];
 }
 
@@ -65,7 +66,8 @@ export async function encodeFnResponseVM(initialize: string, expr: string, abi: 
   const abiExtract = abi.find((abiItem) => abiItem.name === responseType);
   const inputAbi: AbiEntry = abiExtract ? { name: abiExtract.type, type: abiExtract.name } : { name: "literal", type: responseType };
   console.log("inputAbi=", inputAbi);
-  const res = parseCalldataField(iter, inputAbi, structs, enums);
+  const abiParser= createAbiParser(abi,hdParsingStrategy);
+  const res = parseCalldataField({argsIterator:iter, input: inputAbi, structs:structs, enums:enums, parser:abiParser});
   console.log("resEncodeType=", res);
   return Array.isArray(res) ? res : [res];
 }

@@ -5,38 +5,54 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Next.js: debug client-side",
-            "type": "chrome",
-            "request": "launch",
-            "url": "http://localhost:3000"
-        },
-        {
-            "name": "Next.js: debug server-side",
+            "name": "server-side",
             "type": "node-terminal",
             "request": "launch",
             "command": "npm run dev"
         },
         {
+            "name": "client-side chrome",
             "type": "chrome",
             "request": "launch",
-            "name": "NEXT.JS: client Chrome",
             "url": "http://localhost:3000",
-            "webRoot": "${workspaceFolder}",
-            "sourceMaps": true,
-            "sourceMapPathOverrides": {
-                "webpack://_N_E/*": "${webRoot}/*"
-            }
+            "userDataDir": false
+        },
+        {
+            "name": "Next.js: debug client-side (Firefox new without extensions)",
+            "type": "firefox",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "reAttach": true,
+            "pathMappings": [
+                {
+                    "url": "webpack://_N_E",
+                    "path": "${workspaceFolder}"
+                }
+            ]
+        },
+        {
+            "name": "Firefox attach with extensions",
+            "type": "firefox",
+            "request": "attach"
         },
         {
             "name": "Next.js: debug full stack",
-            "type": "node-terminal",
+            "type": "node",
             "request": "launch",
-            "command": "npm run dev",
+            "program": "${workspaceFolder}/node_modules/next/dist/bin/next",
+            "runtimeArgs": [
+                "--inspect"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
             "serverReadyAction": {
-                "pattern": "started server on .+, url: (https?://.+)",
+                "action": "debugWithChrome",
+                "killOnServerStop": true,
+                "pattern": "- Local:.+(https?://.+)",
                 "uriFormat": "%s",
-                "action": "debugWithChrome"
+                "webRoot": "${workspaceFolder}"
             }
-        },
+        }
     ]
 }
