@@ -7,6 +7,7 @@
 
 # testing
 /coverage
+/chromeConfig
 
 # next.js
 /.next/

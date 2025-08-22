@@ -11,14 +11,24 @@
             "command": "npm run dev"
         },
         {
-            "name": "client-side chrome",
+            "name": "client-side Chrome new without extensions",
             "type": "chrome",
             "request": "launch",
             "url": "http://localhost:3000",
-            "userDataDir": false
         },
         {
-            "name": "Next.js: debug client-side (Firefox new without extensions)",
+            "name": "client-side Chrome attach with extensions",
+            // Create a ./chromeConfig directory.
+            // source ./launchChrome.sh
+            // if necessary, add needed extensions.
+            // Launch debugger with this config.
+            // open url http://localhost:3000
+            "type": "chrome",
+            "request": "attach",
+            "port": 9222,
+        },
+        {
+            "name": "client-side Firefox new without extensions",
             "type": "firefox",
             "request": "launch",
             "url": "http://localhost:3000",
@@ -31,7 +41,13 @@
             ]
         },
         {
-            "name": "Firefox attach with extensions",
+            "name": "client-side Firefox attach with extensions",
+            // source ./launchFirefox.sh
+            // In console/parameters :
+            //   - activate Chrome debugging
+            //   - activate distant debugging 
+            // Launch debugger with this config.
+            // open url http://localhost:3000
             "type": "firefox",
             "request": "attach"
         },

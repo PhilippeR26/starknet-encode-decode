@@ -1,0 +1,1 @@
+firefox -start-debugger-serve
