@@ -21,7 +21,7 @@
     "framer-motion": "^11.0.25",
     "get-starknet-core": "4.0.0-next.4",
     "material-react-toastify": "^2.0.1",
-    "next": "^15.2.2",
+    "next": "^15.5.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.51.2",
@@ -31,16 +31,15 @@
     "starknet": "^8.5.0",
     "swr": "^2.2.5",
     "tslib": "^2.8.1",
-    "typescript": "^5.8.2",
-    "vm2": "^3.9.19",
-    "zustand": "^4.5.2"
+    "typescript": "^5.9.2",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "encoding": "^0.1.13",
     "simple-zustand-devtools": "^1.1.0",
-    "ts-loader": "^9.5.1",
-    "webpack": "^5.91.0",
-    "webpack-cli": "^5.1.4"
+    "ts-loader": "^9.5.2",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
   },
   "findUnusedExports": {
     "include": [
@@ -53,5 +52,5 @@
       "./.next/**/*"
     ]
   },
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  "packageManager": "yarn@1.22.22"
 }
