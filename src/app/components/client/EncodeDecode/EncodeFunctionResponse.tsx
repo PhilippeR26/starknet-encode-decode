@@ -209,8 +209,8 @@ export default function EncodeFunctionResponse() {
                     const inputAbi: AbiEntry = abiExtract ? <br></br>
                     {"   "} &#123; name: abiExtract.type, type: abiExtract.name &#125; :<br></br>
                     {"   "} &#123; name: "literal", type: responseType &#125;;<br></br>
-
-                    const result = parseCalldataField(iter, inputAbi, structs, enums);<br></br>
+                    const abiParser = createAbiParser(abi, hdParsingStrategy);<br></br>
+                    const result = parseCalldataField( &#123; argsIterator: iter, input: inputAbi, <br></br>{"   "} structs: structs, enums: enums, parser: abiParser &#125;);<br></br>
                   </pre>
                 </Box>
               </Box>

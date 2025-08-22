@@ -2,10 +2,10 @@
 
 import * as ts from "typescript";
 import * as vm from "vm";
-import { CairoOption, CairoOptionVariant, CairoResult, CairoResultVariant, CairoCustomEnum, cairo, shortString, CallData, parseCalldataField, type AbiEntry, type Abi, byteArray, hdParsingStrategy, createAbiParser } from "starknet";
+import { CairoOption, CairoOptionVariant, CairoResult, CairoResultVariant, CairoCustomEnum, cairo, shortString, CallData, parseCalldataField, type AbiEntry, type Abi, byteArray, hdParsingStrategy, createAbiParser, CairoByteArray, CairoBytes31, CairoFelt252, CairoInt8, CairoInt16, CairoInt32, CairoInt64, CairoInt128, CairoUint8, CairoUint16, CairoUint32, CairoUint64, CairoUint96, CairoUint128, CairoUint256, CairoUint512, CairoFixedArray } from "starknet";
 
 export async function evalJS(initialize: string, expr: string): Promise<any> {
-  const imports = `import {CairoOption, CairoOptionVariant, CairoResult, CairoResultVariant, CairoCustomEnum, cairo, BigNumberish, Uint256, Uint512, shortString, byteArray} from 'starknet';`
+  const imports = `import {CairoOption, CairoOptionVariant, CairoResult, CairoResultVariant, CairoCustomEnum, cairo, BigNumberish, Uint256, Uint512, shortString, byteArray, CairoByteArray, CairoBytes31, CairoFelt252, CairoInt8, CairoInt16, CairoInt32, CairoInt64, CairoInt128, CairoUint8, CairoUint16, CairoUint32, CairoUint64, CairoUint96, CairoUint128, CairoUint256, CairoUint512, CairoFixedArray} from 'starknet';`
   const init2 = imports + initialize + `const SNJSresult=` + expr;
   console.log("init2=", init2);
   const transpiledInit = ts.transpile(init2, {});
@@ -39,7 +39,7 @@ export async function encodeTypeVM(initialize: string, expr: string, abi: Abi, s
   const enums = CallData.getAbiEnum(abi);
   const abiExtract = abi.find((abiItem) => abiItem.name === selectedType);
   const inputAbi: AbiEntry = { name: abiExtract.type, type: abiExtract.name };
-  console.log("inputAbiTTTTT=", inputAbi);
+  console.log("inputAbi=", inputAbi);
   const abiParser = createAbiParser(abi, hdParsingStrategy);
   const res = parseCalldataField({ argsIterator: iter, input: inputAbi, structs: structs, enums: enums, parser: abiParser });
   console.log("resEncodeType=", res);
@@ -55,7 +55,7 @@ export async function encodeFunctionVM(initialize: string, expr: string, abi: Ab
 }
 
 export async function encodeFnResponseVM(initialize: string, expr: string, abi: Abi, responseType: string): Promise<string[]> {
-  console.log("encodeFnResponseVM***");
+  console.log("encode_FnResponseVM***");
   console.log("initialize=", initialize, "expr=", expr, "responseType=", responseType);
   const inputObject = await evalJS(initialize, expr);
   const param = [inputObject];

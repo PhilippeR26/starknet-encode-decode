@@ -178,7 +178,8 @@ export default function EncodeType() {
                 const enums = CallData.getAbiEnum(abi);<br></br>
                 const abiExtract = abi.find((abiItem) =&gt; abiItem.name === selectedType); <br></br>
                 const inputAbi:AbiEntry = &#123;name:abiExtract.type,type: abiExtract.name&#125;;<br></br>
-                const result = parseCalldataField(iter, inputAbi, structs, enums);<br></br>
+                const abiParser = createAbiParser(abi, hdParsingStrategy);<br></br>
+                const result = parseCalldataField( &#123; argsIterator: iter, input: inputAbi, <br></br>{"   "} structs: structs, enums: enums, parser: abiParser &#125;);<br></br>
               </pre>
             </Box>
           </Box>
