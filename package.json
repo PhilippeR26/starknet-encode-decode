@@ -1,6 +1,6 @@
 {
   "name": "starknet-encode-decode",
-  "version": "0.2.1",
+  "version": "0.2.0",
   "private": false,
   "scripts": {
     "dev": "next dev",
@@ -9,17 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@chakra-ui/icons": "^2.2.4",
+    "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
-    "next": "^15.5.7",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "framer-motion": "^12.23.25",
+    "next": "^15.5.6",
     "react": "19.2.1",
+    "react-dom": "19.2.1",
     "react-hook-form": "^7.68.0",
-    "starknet": "^8.5.0",
+    "sharp": "^0.34.5",
+    "starknet": "^9.1.0",
     "typescript": "^5.9.3",
     "zustand": "^5.0.9"
   },
   "devDependencies": {
-        "@types/node": "24.10.1",
+    "@types/node": "24.10.2",
     "@types/react": "19.2.7",
     "simple-zustand-devtools": "^1.1.0"
   },
@@ -33,5 +38,6 @@
     "exclude": [
       "./.next/**/*"
     ]
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }
